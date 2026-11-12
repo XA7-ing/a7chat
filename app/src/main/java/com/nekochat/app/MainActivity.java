@@ -224,7 +224,13 @@ public class MainActivity extends Activity {
         }
 
         void start() throws Exception {
-            ss = new ServerSocket(0, 50, InetAddress.getByName("127.0.0.1"));
+            // 固定端口：端口一变 origin 就变，WebView 的 localStorage 会整份丢掉（每次都要重登）
+            java.net.InetAddress lo = InetAddress.getByName("127.0.0.1");
+            try {
+                ss = new ServerSocket(47821, 50, lo);
+            } catch (Exception e) {
+                ss = new ServerSocket(0, 50, lo);
+            }
             port = ss.getLocalPort();
             Thread t = new Thread(() -> {
                 while (true) {
@@ -618,6 +624,17 @@ public class MainActivity extends Activity {
                 return;
             }
 
+            if (path.equals("/api/prefs")) {
+                JSONObject j = new JSONObject();
+                j.put("base", base);
+                j.put("username", userName);
+                j.put("token", token);
+                j.put("api_tier", apiTier);
+                j.put("session_id", sid);
+                byte[] outJ = j.toString().getBytes(StandardCharsets.UTF_8);
+                writeRaw(out, 200, "application/json; charset=utf-8", outJ);
+                return;
+            }
             if (path.equals("/api/state")) {
                 JSONObject j = new JSONObject();
                 j.put("session_id", sid);

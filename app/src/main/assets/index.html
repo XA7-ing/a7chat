@@ -295,7 +295,10 @@ async function api(path, opts={}){
   const o = Object.assign({}, opts);
   o.headers = Object.assign({'Authorization':'Bearer '+token}, o.headers||{});
   const r = await fetch(path, o);
-  if (r.status === 401){ showGate(); throw new Error('401'); }
+  if (r.status === 401){
+    token = ''; localStorage.removeItem('gc_token');
+    showGate(); throw new Error('401');
+  }
   return r;
 }
 function fmtTime(ts){
@@ -949,7 +952,12 @@ $('#sessNew').onclick = async () => {
   await loadHistory();
 };
 
-function showGate(){ document.body.classList.add('noauth'); $('#gate').classList.add('on'); }
+function showGate(){
+  // 上次填过的服务器地址和用户名直接带出来，只剩密码要敲
+  if (prefs && prefs.base && !$('#gBase').value) $('#gBase').value = prefs.base;
+  if (prefs && prefs.username && !$('#gUser').value) $('#gUser').value = prefs.username;
+  document.body.classList.add('noauth'); $('#gate').classList.add('on');
+}
 $('#gGo').onclick = async () => {
   const b = ($('#gBase').value || '').trim();
   const u = $('#gUser').value.trim();
@@ -985,7 +993,20 @@ async function boot(){
   renderAvas(); renderStickers();
   await loadHistory();
 }
+let prefs = null;
+async function loadPrefs(){
+  try{
+    const r = await fetch('/api/prefs');
+    prefs = await r.json();
+  }catch(e){ prefs = null; }
+  return prefs;
+}
 (async function(){
+  await loadPrefs();
+  // WebView 的 localStorage 可能被系统清掉，原生层那份才是准的
+  if (!token && prefs && prefs.token){
+    token = prefs.token; localStorage.setItem('gc_token', token);
+  }
   if (!token){ showGate(); return; }
   const ok = await loadState();
   if (!ok){ showGate(); return; }
