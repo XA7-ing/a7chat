@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.nekochat.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.nekochat.app"
+        minSdk 24
+        targetSdk 34
+        versionCode 23
+        versionName "2.3"
+    }
+
+    signingConfigs {
+        release {
+            // 签名信息不在仓库里：本地写在 gradle.properties，CI 用环境变量
+            def storePath = findProperty("XGC_STORE_FILE") ?: System.getenv("XGC_STORE_FILE")
+            def storePwd = findProperty("XGC_STORE_PASSWORD") ?: System.getenv("XGC_STORE_PASSWORD")
+            def keyPwd = findProperty("XGC_KEY_PASSWORD") ?: System.getenv("XGC_KEY_PASSWORD")
+            if (storePath && storePwd) {
+                storeFile file(storePath)
+                storePassword storePwd
+                keyAlias findProperty("XGC_KEY_ALIAS") ?: "release"
+                keyPassword keyPwd ?: storePwd
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
