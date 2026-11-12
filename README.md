@@ -56,3 +56,7 @@ docs/NOTES.md                      开发笔记与踩坑
 
 非官方项目，和 AstrBot 开发团队没有关系。
 面板密码没有存在云端，只在本机 SharedPreferences 里。
+
+## License
+
+[MIT](LICENSE)
