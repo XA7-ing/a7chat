@@ -5,6 +5,11 @@
 界面用 WebView 加载本地页面，网络请求由一个跑在 `127.0.0.1` 的迷你 HTTP 服务转发到面板，
 不依赖任何第三方库（无 Retrofit / OkHttp / AndroidX），APK 只有 120 KB 左右。
 
+## 下载
+
+不想自己编译的话，直接去 [Releases](https://github.com/XA7-ing/a7chat/releases/latest) 下载最新的 `A7chat-*.apk` 装上就行。
+安装时需要允许「安装未知来源应用」，包名 `com.nekochat.app`，后续版本可覆盖升级。
+
 ## 功能
 
 - 面板账号登录，登录态保存在本地
