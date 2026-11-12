@@ -631,6 +631,12 @@ public class MainActivity extends Activity {
                 j.put("token", token);
                 j.put("api_tier", apiTier);
                 j.put("session_id", sid);
+                String ver = "";
+                try {
+                    ver = act.getPackageManager().getPackageInfo(act.getPackageName(), 0).versionName;
+                } catch (Exception ignored) {
+                }
+                j.put("version", ver);
                 byte[] outJ = j.toString().getBytes(StandardCharsets.UTF_8);
                 writeRaw(out, 200, "application/json; charset=utf-8", outJ);
                 return;

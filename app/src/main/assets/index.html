@@ -244,7 +244,7 @@ body.noauth .app{display:none}
             <button class="mini" id="btnNewChat">开始新对话</button></div>
         </div>
         <div class="card">
-          <div class="row-line"><label>A7chat v2.3</label>
+          <div class="row-line"><label id="appVer">A7chat</label>
             <button class="mini" id="btnSave">保存设置</button></div>
           <div class="row-line"><label>服务器接口</label>
             <span id="setTier" style="color:var(--dim);font-size:13px">—</span></div>
@@ -998,6 +998,7 @@ async function loadPrefs(){
   try{
     const r = await fetch('/api/prefs');
     prefs = await r.json();
+    if (prefs && prefs.version) $('#appVer').textContent = 'A7chat v' + prefs.version;
   }catch(e){ prefs = null; }
   return prefs;
 }
