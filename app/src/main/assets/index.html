@@ -1010,6 +1010,9 @@ async function loadPrefs(){
   if (!token){ showGate(); return; }
   const ok = await loadState();
   if (!ok){ showGate(); return; }
+  // body 默认带 noauth（.app 是 display:none），自动登录这条路必须手动摘掉，否则白屏
+  document.body.classList.remove('noauth');
+  $('#gate').classList.remove('on');
   await boot();
 })();
 </script>
